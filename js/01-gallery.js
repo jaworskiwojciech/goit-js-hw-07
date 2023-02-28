@@ -32,12 +32,20 @@ const clickOnImage = (event) => {
 
   if (event.target.classList.contains("gallery")) return;
 
-  const source = event.target.dataset.source;
-
   const instance = basicLightbox.create(`
-    <img src="${source}"width="800" height="600">`);
+    <img src="${event.target.dataset.source}"width="800" height="600">`);
+  
+  onClose: instance => {
+    galleryContainerElement.removeEventListener("keydown", keydownListener);
+  };
 
   instance.show();
+
+  const keydownListener = function (event) {
+    if (event.code === "Escape") {
+      instance.close();
+    }
+  }
 };
 
 galleryContainerElement.addEventListener("click", clickOnImage);
