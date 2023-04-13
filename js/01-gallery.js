@@ -1,47 +1,44 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
 
-console.log(galleryItems);
+// console.log(galleryItems);
 
-const galleryContainerElement = document.querySelector(".gallery");
-const imagesMarkup = createImagesMarkup(galleryItems);
+const galleryContainer = document.querySelector(".gallery");
 
-galleryContainerElement.insertAdjacentHTML("beforeend", imagesMarkup);
-
-function createImagesMarkup(image) {
-  return galleryItems
+const createImagesMarkup = (images) => {
+  return images
     .map(({ preview, original, description }) => {
-      return `
-            <div class="gallery__item">
-                <a class="gallery__link" href="large-image.jpg">
-                    <img
-                        class="gallery__image"
-                        src="${preview}"
-                        data-source="${original}"
-                        alt="${description}"
-                    />
-                </a>
-            </div>
-            `;
+      return `<div class="gallery__item">
+  <a class="gallery__link" href="large-image.jpg">
+    <img
+      class="gallery__image"
+      src="${preview}"
+      data-source="${original}"
+      alt="${description}"
+    />
+  </a>
+</div>`;
     })
     .join("");
-}
+};
 
-const clickOnImage = (event) => {
-  event.preventDefault();
+galleryContainer.insertAdjacentHTML(
+  "afterbegin",
+  createImagesMarkup(galleryItems)
+);
 
-  if (event.target.classList.contains("gallery")) return;
+const clickOnImage = (e) => {
+  e.preventDefault();
+  if (e.target.classList.contains("gallery")) return;
 
-  const instance = basicLightbox.create(
-    `
-    <img src="${event.target.dataset.source}"width="800" height="600">
-    `
-  );
+  const instance = basicLightbox.create(`
+   <img src="${e.target.dataset.source}" width="800" height="600">
+`);
 
   instance.show();
 
-  const keydownListener = function (event) {
-    if (event.key === "Escape") {
+  const keydownListener = (e) => {
+    if (e.key === "Escape") {
       instance.close();
       document.removeEventListener("keydown", keydownListener);
     }
@@ -50,4 +47,4 @@ const clickOnImage = (event) => {
   document.addEventListener("keydown", keydownListener);
 };
 
-galleryContainerElement.addEventListener("click", clickOnImage);
+galleryContainer.addEventListener("click", clickOnImage);
